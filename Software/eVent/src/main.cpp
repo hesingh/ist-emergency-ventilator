@@ -108,7 +108,7 @@ Encoder encoder(ENC_A,ENC_B);
 
 void calculateVolumeParameters(){
   int singleBreathTime =60000/breathsPerMinute - timeHold;
-  targetTimeInhale = singleBreathTime/(1.0/I2E_ratio);
+  targetTimeInhale = singleBreathTime*I2E_ratio;
   targetTimeExhale = singleBreathTime -targetTimeInhale;
   volumeTicks = (volumeTidal+420)/12; //linear model y=12*x-420
   inhaleEndPosition = bagPosition - volumeTicks;
