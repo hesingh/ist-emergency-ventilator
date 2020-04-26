@@ -2,7 +2,6 @@
 #include "pins.h"
 #include "states.h"
 #include "display.h"
-#include "motor.h"
 #include "modes.h"
 #include "globalFlags.h"
 #include "../lib/Encoder_ID129/Encoder.h"
@@ -12,10 +11,8 @@
 
 bool PRESSURE_FLAG;
 bool CHANGES_FLAG;
-bool MOTOR_FLAG;
 bool START_UP_FLAG;
 bool SILENCE_FLAG;
-bool MOTOR_ACTIVE_FLAG;
 bool VOLUME_FLAG;
 
 
@@ -275,10 +272,6 @@ void setup() {
   pinMode(SILENCE_BUTTON, INPUT_PULLUP);
   pinMode(CONFIRM_BUTTON, INPUT_PULLUP);
   pinMode(BUZZER, OUTPUT);
-  pinMode(MOTOR_DIR, OUTPUT);
-  pinMode(MOTOR_PWM, OUTPUT);
-  pinMode(MOTOR_BRAKE, OUTPUT);
-  pinMode(MOTOR_SENSE, INPUT);
   pinMode(LCD_BACKLIGHT, OUTPUT);
   pinMode(ENC_A, INPUT_PULLUP);
   pinMode(ENC_B, INPUT_PULLUP);
@@ -331,11 +324,7 @@ void loop() {
       switch (state) {
         //prehome
         case 0:{
-          //move outward slowly
-          moveMotor(DIRECTION_OPEN, velocityHoming, MOTOR_FLAG);
-
           if(digitalRead(LIMIT_SWITCH) == LIMIT_REACHED){
-            stopMotor();
             timerDebounce = millis() + 100;
             state++;
           }
@@ -343,11 +332,7 @@ void loop() {
         }
         //homing
         case 1:{
-          //move forward slowly, zero encoder
-          moveMotor(DIRECTION_CLOSE, velocityHoming, MOTOR_FLAG);
-
           if((digitalRead(LIMIT_SWITCH)!=LIMIT_REACHED) && (millis()>timerDebounce)){
-            stopMotor();
             tone(BUZZER, 20000, 500);
             delay(1000);
             homePosition = encoder.read();
@@ -358,10 +343,8 @@ void loop() {
         }
         //posthome
         case 2:
-          moveMotor(DIRECTION_CLOSE, velocityHoming, MOTOR_FLAG);
           currentPosition = encoder.read();
           if(currentPosition <= bagPosition){
-            stopMotor();
             calculateVolumeParameters();
             state = 0;
             mode = nextMode;
@@ -393,14 +376,7 @@ void loop() {
           }
           //inhale
           case 1:{
-            moveMotor(DIRECTION_CLOSE, dutyCycleOutput, MOTOR_FLAG);
-            currentPosition = encoder.read();
-            if(millis() > timerControlPeriod){
-              controlInhaleVelocity();
-              timerControlPeriod = millis() + controlPeriod;
-            }
             if(currentPosition <= inhaleEndPosition){
-              stopMotor();
               timerRealInhale = millis()-timerRealInhale;
               timerSetPoint = millis() + timeHold;
               delay(10);
@@ -424,7 +400,6 @@ void loop() {
           }
           //exhale
           case 3:{
-            moveMotor(DIRECTION_OPEN, dutyCycleOutput,MOTOR_FLAG);
             currentPosition = encoder.read();
             if(millis() > timerControlPeriod){
               controlExhaleVelocity();
@@ -432,7 +407,6 @@ void loop() {
               timerControlPeriod = millis() + controlPeriod;
             }
             if(currentPosition >= bagPosition){
-              stopMotor();
               timerRealExhale = millis()-timerRealExhale;
               int totalTime = timerRealInhale + timerRealExhale + timeHold;
               if(totalTime < 60000/breathsPerMinute){
@@ -477,14 +451,12 @@ void loop() {
         }
         //inhale
         case 1: {
-          moveMotor(DIRECTION_CLOSE, dutyCycleOutput, MOTOR_FLAG);
           currentPosition = encoder.read();
           if(millis() > timerControlPeriod){
             controlPressure();
             timerControlPeriod = millis() + controlPeriod;
           }
           if(millis() > timerInhale){
-            stopMotor();
             timerRealInhale = millis()-timerRealInhale;
             timerSetPoint = millis() + timeHold;
             //calculate applied volume
@@ -516,7 +488,6 @@ void loop() {
         }
         //exhale
         case 3: {
-          moveMotor(DIRECTION_OPEN, dutyCycleOutput,MOTOR_FLAG);
           currentPosition = encoder.read();
           if(millis() > timerControlPeriod){
             controlExhaleVelocity();
@@ -524,7 +495,6 @@ void loop() {
             timerControlPeriod = millis() + controlPeriod;
           }
           if(currentPosition >= bagPosition){
-            stopMotor();
             timerRealExhale = millis()-timerRealExhale;
             int totalTime = timerRealInhale + timerRealExhale + timeHold;
             if(totalTime < 60000/breathsPerMinute){
@@ -590,7 +560,6 @@ void loop() {
           mode = MODE_PRESSURE;
         }
         else if(modeMeasure > 800){
-          stopMotor();
           mode = MODE_IDLE;
           nextMode = MODE_IDLE;
         }
@@ -629,7 +598,7 @@ void loop() {
       calculateVolumeParameters();
 
       //Confirm error
-      MOTOR_FLAG = PRESSURE_FLAG = false;
+      PRESSURE_FLAG = false;
       state=0;
     }
 
@@ -648,9 +617,6 @@ void loop() {
     timerDisplay = millis()+ 100;
   }
 
-  if(!MOTOR_ACTIVE_FLAG){
-    stopMotor(); //to avoid random movement of motor due to noise
-  }
   if(START_UP_FLAG){
     //confirm changes and start mode if not started
     volumeTidal = volumeTidalSet;

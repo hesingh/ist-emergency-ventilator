@@ -17,12 +17,6 @@
 //OUTPUTS
 #define BUZZER      9             //piezo buzzer (724-3178) PWM
 
-//Motor ( shield: 182-5518)
-#define MOTOR_DIR   12
-#define MOTOR_PWM   3
-#define MOTOR_BRAKE A9
-#define MOTOR_SENSE A8          //1.65V / Ampere
-
 //Display
 #define LCD_RS      6
 #define LCD_ENABLE  5

@@ -4,10 +4,8 @@
 //flags
 extern bool PRESSURE_FLAG;
 extern bool CHANGES_FLAG;
-extern bool MOTOR_FLAG;
 extern bool START_UP_FLAG;
 extern bool SILENCE_FLAG;
-extern bool MOTOR_ACTIVE_FLAG;
 extern bool VOLUME_FLAG;
 
 #endif

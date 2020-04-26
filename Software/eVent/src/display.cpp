@@ -9,7 +9,6 @@
 LiquidCrystal lcd(LCD_RS, LCD_ENABLE, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
 
 bool PRESS_ERR_SCREEN_FLAG;
-bool MOTOR_ERR_SCREEN_FLAG;
 bool VOLUME_ERR_SCREEN_FLAG;
 
 
@@ -122,15 +121,6 @@ void updateErrors(){
     clearPressureError();
   }
 
-  if(MOTOR_FLAG && !MOTOR_ERR_SCREEN_FLAG){
-    showMotorError();
-    MOTOR_ERR_SCREEN_FLAG = true;
-  }
-  else if(!MOTOR_FLAG && MOTOR_ERR_SCREEN_FLAG){
-    MOTOR_ERR_SCREEN_FLAG = false;
-    clearMotorError();
-  }
-
   if(VOLUME_FLAG && !VOLUME_ERR_SCREEN_FLAG){
     showVolumeError();
     VOLUME_ERR_SCREEN_FLAG = true;
@@ -142,7 +132,6 @@ void updateErrors(){
 
 }
 
-
 void showPressureError(){
   lcd.leftToRight();
   lcd.setCursor(9, 1);
@@ -150,15 +139,6 @@ void showPressureError(){
   lcd.setCursor(9, 1);
   lcd.print("PRES ERR!");
 
-}
-
-void showMotorError(){
-  lcd.leftToRight();
-
-  lcd.setCursor(9,2);
-  lcd.print("          ");
-  lcd.setCursor(9,2);
-  lcd.print("MOTOR ERR!");
 }
 
 void showVolumeError(){
@@ -176,11 +156,6 @@ void clearPressureError(){
   lcd.print("          ");
 }
 
-void clearMotorError(){
-  lcd.leftToRight();
-  lcd.setCursor(9,2);
-  lcd.print("          ");
-}
 void clearVolumeError(){
   lcd.leftToRight();
   lcd.setCursor(9,2);
