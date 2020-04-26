@@ -24,25 +24,17 @@ const int closePosition = 190;      //Ticks between home and full close
 
 //state machine variables
 int lastMode;
-int mode;                 //switch state variable for outer switch
-int nextMode;             //mode to be executed after homing
-int state;                //switch state variable for inner switch
-
-//Encoder variables
-int homePosition;         //Encoder value at the position of the limit switch
-int currentPosition;
-int bagPosition;          //absolute positions where fingers touching the bag
-int inhaleEndPosition;    //calculated absolute position at the end of the inspiratory phase
-int prePeriodPosition;    //ticks before the current velocity control period
-int preInhalePosition;
+int mode;                 // switch state variable for outer switch
+int nextMode;             // mode to be executed after homing
+int state;                // switch state variable for inner switch
 
 //In/Exhale times
-int targetTimeInhale;     //The length of time (in ms) of the inspiratory phase.
-int targetTimeExhale;     //The length of time (in ms) of the expiratory phase.
+int targetTimeInhale;     // The length of time (in ms) of the inspiratory phase.
+int targetTimeExhale;     // The length of time (in ms) of the expiratory phase.
 
 //volume parameters
-int volumeTidal;          //The total volume of air to be delivered to the patient
-int volumeTicks;          //The number of Encoder ticks required for the given volumeTidal
+int volumeTidal;          // The total volume of air to be delivered to the patient
+int volumeTicks;          // The number of Encoder ticks required for the given volumeTidal
 int realVolume;
 int realVolumeTicks;
 

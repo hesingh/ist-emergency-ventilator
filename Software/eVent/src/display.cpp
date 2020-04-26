@@ -17,7 +17,7 @@ void initLCD(){
 }
 
 void homeScreen() {
-  //static chars for home screen
+  // static chars for home screen
   lcd.leftToRight();
 
   lcd.setCursor(0, 0);
@@ -38,9 +38,11 @@ void homeScreen() {
   lcd.print("[mbar]");
 }
 
-void updateValues(int volumeTidalDisp, int breathsPerMinuteDisp, float I2E_ratioDisp, int assistDetectionPressureDisp, int pressurePlateauDisp, int realVolumeDisp, int mode){
+void updateValues(int volumeTidalDisp, int breathsPerMinuteDisp, float I2E_ratioDisp,
+                  int assistDetectionPressureDisp, int pressurePlateauDisp,
+                  int realVolumeDisp, int mode){
   int I2E_int;
-  //dynamic values for homescreen
+  // dynamic values for homescreen
   lcd.setCursor(5, 0);
   lcd.print("   ");
 

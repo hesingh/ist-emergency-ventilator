@@ -3,7 +3,9 @@
 
 void initLCD();
 void homeScreen();
-void updateValues(int volumeTidalDisp, int breathsPerMinuteDisp, float I2E_ratioDisp, int assistDetectionPressureDisp, int pressurePlateauDisp, int realVolumeDisp, int mode);
+void updateValues(int volumeTidalDisp, int breathsPerMinuteDisp, float I2E_ratioDisp,
+                  int assistDetectionPressureDisp, int pressurePlateauDisp,
+                  int realVolumeDisp, int mode);
 void updateErrors();
 void showPressureError();
 void showVolumeError();
